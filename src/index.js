@@ -6,7 +6,15 @@ app.use(express.json());
 let todos = [];
 app.get("/", (req, res) => res.send("Hello World!"));
 app.get("/todo", (req, res) => res.json(todos));
-app.get("/todo/:id", (req, res) => res.send("Hello World!"));
+app.get("/todo/:id", (req, res) => {
+  let idn = todos.findIndex((todo) => todo.id == req.params.id);
+  if (idn == -1) {
+    res.status(401).json({
+      message: "Data not found with id :" + req.params.id,
+    });
+  }
+  res.json(todos[idn]);
+});
 app.post("/todo", (req, res) => {
   const title = req.body?.title;
   if (!title || typeof title !== "string") {
@@ -29,7 +37,8 @@ app.put("/todo/:id", (req, res) => {
       message: "Data not found with id :" + req.params.id,
     });
   }
-  res.json(todos[idn]);
+  todos[idn].title = req.body.title;
+  res.json({ message: "Data updated" });
 });
 app.delete("/todo/:id", (req, res) => {
   let idn = todos.findIndex((todo) => todo.id == req.params.id);
