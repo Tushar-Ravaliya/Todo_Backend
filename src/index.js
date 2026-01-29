@@ -22,6 +22,14 @@ app.post("/todo", (req, res) => {
   todos.push(newTodo);
   res.status(201).json(newTodo);
 });
-app.put("/todo/:id", (req, res) => res.send("Hello World!"));
+app.put("/todo/:id", (req, res) => {
+  let idn = todos.findIndex((todo) => todo.id == req.params.id);
+  if (idn == -1) {
+    res.status(404).json({
+      message: "Data not found with id" + req.params.id,
+    });
+  }
+  res.json(todos[idn]);
+});
 app.delete("/todo/:id", (req, res) => res.send("Hello World!"));
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
